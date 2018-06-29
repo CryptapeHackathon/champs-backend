@@ -1,0 +1,35 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  host_introduction: MyString
+  topic: MyString
+  host_fund_wei: 1
+  target_fund_wei: 1
+  teams_count: 1
+  participation_fee_wei: 1
+  award_wei_list: 
+  vote_reward_percent: 1
+  crow_funding_start_at: 2018-06-29 12:06:58
+  apply_start_at: 2018-06-29 12:06:58
+  game_start_at: 2018-06-29 12:06:58
+  vote_start_at: 2018-06-29 12:06:58
+  finished_at: 2018-06-29 12:06:58
+  status: 1
+
+two:
+  name: MyString
+  host_introduction: MyString
+  topic: MyString
+  host_fund_wei: 1
+  target_fund_wei: 1
+  teams_count: 1
+  participation_fee_wei: 1
+  award_wei_list: 
+  vote_reward_percent: 1
+  crow_funding_start_at: 2018-06-29 12:06:58
+  apply_start_at: 2018-06-29 12:06:58
+  game_start_at: 2018-06-29 12:06:58
+  vote_start_at: 2018-06-29 12:06:58
+  finished_at: 2018-06-29 12:06:58
+  status: 1
