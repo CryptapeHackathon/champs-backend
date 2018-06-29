@@ -1,9 +1,18 @@
 class Hackathon < ApplicationRecord
   serialize :award_wei_list, Array
-  enum status: [:preparation, :crow_funding, :apply_participation, :gaming, :voting, :finished]
+  enum status: [:preparation, :crow_funding, :apply_participation, :gaming, :voting, :finished, :failed]
+
+  belongs_to :teams
+
+  def refresh_real_status
+    current_status
+    # TODO check failed status
+    # check corw_funding apply voting status and set failed
+  end
 
   # detection realtime status and update status
   def current_status
+    return status if [:finished, :failed].include? status
     current = Time.now
 
     s = if current < crow_funding_start_at

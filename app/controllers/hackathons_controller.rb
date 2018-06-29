@@ -1,5 +1,6 @@
 class HackathonsController < ApplicationController
   before_action :set_hackathon, only: [:show, :update, :destroy]
+  before_action :check_update_permission, only: [:update]
 
   # GET /hackathons
   # GET /hackathons.json
@@ -45,6 +46,10 @@ class HackathonsController < ApplicationController
   # Use callbacks to share common setup or constraints between actions.
   def set_hackathon
     @hackathon = Hackathon.find(params[:id])
+  end
+
+  def check_update_permission
+    ensure_hackathon_status([:gaming, :preparation])
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.

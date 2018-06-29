@@ -34,13 +34,13 @@ class UsersController < ApplicationController
 
   # PATCH/PUT /users/1
   # PATCH/PUT /users/1.json
-  def update
-    if @user.update(user_params)
-      render :show, status: :ok, location: @user
-    else
-      render json: @user.errors, status: :unprocessable_entity
-    end
-  end
+  # def update
+  #   if @user.update(user_params.slice(:introduction))
+  #     render :show, status: :ok, location: @user
+  #   else
+  #     render json: @user.errors, status: :unprocessable_entity
+  #   end
+  # end
 
   # DELETE /users/1
   # DELETE /users/1.json
@@ -53,10 +53,6 @@ class UsersController < ApplicationController
   # Use callbacks to share common setup or constraints between actions.
   def set_user
     @user = User.find(params[:id])
-  end
-
-  def authenticate_user
-    @user = User.find_by_token!(params[:token])
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.

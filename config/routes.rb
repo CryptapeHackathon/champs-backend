@@ -3,6 +3,8 @@ Rails.application.routes.draw do
     post 'bind', to: "users#bind"
   end
 
-  resources :hackathons
+  resources :hackathons do
+    resources :teams
+  end
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end
