@@ -1,5 +1,5 @@
 source 'https://rubygems.org'
-git_source(:github) { |repo| "https://github.com/#{repo}.git" }
+git_source(:github) {|repo| "https://github.com/#{repo}.git"}
 
 ruby '2.5.0'
 
@@ -7,8 +7,6 @@ ruby '2.5.0'
 gem 'rails', '~> 5.2.0'
 
 gem 'activerecord-jdbcmysql-adapter'
-
-
 
 
 # Use jdbcmysql as the database for Active Record
@@ -41,7 +39,9 @@ gem 'bcrypt', '~> 3.1.7'
 # Reduces boot times through caching; required in config/boot.rb
 #gem 'bootsnap', '>= 1.1.0', require: false
 group :development do
-gem 'listen'
+  gem 'listen'
+  gem 'factory_bot'
+  gem 'faker'
 end
 
 

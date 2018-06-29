@@ -4,7 +4,7 @@ class User < ApplicationRecord
   after_create :generate_bind_token
 
   def generate_token
-    self.token = SecureRandom.random_bytes
+    self.token = SecureRandom.hex
   end
 
   def generate_bind_token

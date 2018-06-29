@@ -1,8 +1,9 @@
 class Hackathon < ApplicationRecord
-  serialize :award_wei_list, Array
+  serialize :award_wei_list, JSON
   enum status: [:preparation, :crow_funding, :apply_participation, :gaming, :voting, :finished, :failed]
 
-  belongs_to :teams
+  has_many :teams
+  belongs_to :user
 
   def refresh_real_status
     current_status

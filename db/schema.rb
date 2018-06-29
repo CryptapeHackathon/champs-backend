@@ -17,11 +17,11 @@ ActiveRecord::Schema.define(version: 2018_06_29_070605) do
     t.string "host_introduction"
     t.string "topic"
     t.string "address"
-    t.integer "host_fund_wei"
-    t.integer "target_fund_wei"
+    t.decimal "host_fund_eth", precision: 27, scale: 18
+    t.decimal "target_fund_eth", precision: 27, scale: 18
     t.integer "teams_count"
-    t.integer "participation_fee_wei"
-    t.binary "award_wei_list"
+    t.decimal "participation_fee_eth", precision: 27, scale: 18
+    t.text "award_eth_list"
     t.integer "vote_reward_percent"
     t.datetime "crow_funding_start_at"
     t.datetime "apply_start_at"
@@ -29,6 +29,7 @@ ActiveRecord::Schema.define(version: 2018_06_29_070605) do
     t.datetime "vote_start_at"
     t.datetime "finished_at"
     t.integer "status"
+    t.integer "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

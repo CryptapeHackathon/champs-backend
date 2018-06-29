@@ -54,6 +54,6 @@ class HackathonsController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def hackathon_params
-    params.require(:hackathon).permit(:name, :host_introduction, :address, :topic, :host_fund_wei, :target_fund_wei, :teams_count, :participation_fee_wei, :award_wei_list, :vote_reward_percent, :crow_funding_start_at, :apply_start_at, :game_start_at, :vote_start_at, :finished_at, :status)
+    params.require(:hackathon).permit(:name, :host_introduction, :address, :topic, :host_fund_eth, :target_fund_eth, :teams_count, :participation_fee_eth, :award_eth_list, :vote_reward_percent, :crow_funding_start_at, :apply_start_at, :game_start_at, :vote_start_at, :finished_at, :status)
   end
 end

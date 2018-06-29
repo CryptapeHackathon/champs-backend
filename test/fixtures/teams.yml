@@ -2,10 +2,12 @@
 
 one:
   hackathon: one
+  user: one
   name: MyString
   introduction: MyText
 
 two:
   hackathon: two
+  user: two
   name: MyString
   introduction: MyText
