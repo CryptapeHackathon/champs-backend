@@ -212,7 +212,8 @@ module HacksContract
 
     # 10.to_wei,
     def create_hackathon(fund_target, fund_period, sign_up_period, match_period, vote_period, deposit, sign_up_fee, champ_bonus, second_bonus, thrid_bonus, vote_bonus, max_teams, min_teams)
-      rpc('CreateHackathon', [fund_target, fund_period, sign_up_period, match_period, vote_period, deposit, sign_up_fee, champ_bonus, second_bonus, thrid_bonus, vote_bonus, max_teams, min_teams])
+      result = rpc('CreateHackathon', [fund_target, fund_period, sign_up_period, match_period, vote_period, deposit, sign_up_fee, champ_bonus, second_bonus, thrid_bonus, vote_bonus, max_teams, min_teams])
+      result["result"]["logs"][-1]["topics"][2][-20..-1]
     end
 
     def rpc(function_name, args)
