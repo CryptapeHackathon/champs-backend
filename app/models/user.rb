@@ -8,6 +8,6 @@ class User < ApplicationRecord
   end
 
   def generate_bind_token
-    self.bind_token = Digest::SHA256.digest("#{id}-#{token}")
+    self.bind_token = Digest::SHA256.hexdigest("#{id}-#{token}")
   end
 end

@@ -1,3 +1,15 @@
+GIT
+  remote: https://github.com/ciri-ethereum/ciri.git
+  revision: ed509c6d8fe7c978d9f4e373dde9845cf9bb19ad
+  specs:
+    ciri (0.0.1)
+      bitcoin-secp256k1 (~> 0.4.0)
+      concurrent-ruby (~> 1.0.5)
+      digest-sha3 (~> 1.1.0)
+      ffi (~> 1.9.23)
+      lru_redux (~> 1.1.0)
+      snappy (~> 0.0.17)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -33,11 +45,6 @@ GEM
       activemodel (= 5.2.0)
       activesupport (= 5.2.0)
       arel (>= 9.0)
-    activerecord-jdbc-adapter (50.0)
-      activerecord (>= 2.2)
-    activerecord-jdbcmysql-adapter (50.0)
-      activerecord-jdbc-adapter (~> 50.0)
-      jdbc-mysql (~> 5.1.36)
     activestorage (5.2.0)
       actionpack (= 5.2.0)
       activerecord (= 5.2.0)
@@ -50,6 +57,8 @@ GEM
     arel (9.0.0)
     bcrypt (3.1.12)
     bcrypt (3.1.12-java)
+    bitcoin-secp256k1 (0.4.0)
+      ffi (>= 1.9.10)
     builder (3.2.3)
     coffee-rails (4.2.2)
       coffee-script (>= 2.2.0)
@@ -61,6 +70,7 @@ GEM
     concurrent-ruby (1.0.5)
     concurrent-ruby (1.0.5-java)
     crass (1.0.4)
+    digest-sha3 (1.1.0)
     erubi (1.7.1)
     execjs (2.7.0)
     factory_bot (4.10.0)
@@ -76,7 +86,6 @@ GEM
     jbuilder (2.7.0)
       activesupport (>= 4.2.0)
       multi_json (>= 1.2)
-    jdbc-mysql (5.1.46)
     listen (3.1.5)
       rb-fsevent (~> 0.9, >= 0.9.4)
       rb-inotify (~> 0.9, >= 0.9.7)
@@ -84,6 +93,7 @@ GEM
     loofah (2.2.2)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
+    lru_redux (1.1.0)
     mail (2.7.0)
       mini_mime (>= 0.1.1)
     marcel (0.3.2)
@@ -94,6 +104,7 @@ GEM
     mini_portile2 (2.3.0)
     minitest (5.11.3)
     multi_json (1.13.1)
+    mysql2 (0.5.1)
     nio4r (2.3.1)
     nio4r (2.3.1-java)
     nokogiri (1.8.3)
@@ -102,6 +113,7 @@ GEM
     puma (3.11.4)
     puma (3.11.4-java)
     rack (2.0.5)
+    rack-cors (1.0.2)
     rack-test (1.0.0)
       rack (>= 1.0, < 3)
     rails (5.2.0)
@@ -144,6 +156,10 @@ GEM
       sprockets (>= 2.8, < 4.0)
       sprockets-rails (>= 2.0, < 4.0)
       tilt (>= 1.1, < 3)
+    snappy (0.0.17)
+    snappy (0.0.17-java)
+      snappy-jars (~> 1.1.0)
+    snappy-jars (1.1.0.1.2-java)
     sprockets (3.7.2)
       concurrent-ruby (~> 1.0)
       rack (> 1, < 3)
@@ -178,14 +194,16 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  activerecord-jdbcmysql-adapter
   bcrypt (~> 3.1.7)
+  ciri!
   coffee-rails (~> 4.2)
   factory_bot
   faker
   jbuilder (~> 2.5)
   listen
+  mysql2 (>= 0.4.4, < 0.6.0)
   puma (~> 3.11)
+  rack-cors
   rails (~> 5.2.0)
   sass-rails (~> 5.0)
   therubyrhino

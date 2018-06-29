@@ -6,7 +6,9 @@ ruby '2.5.0'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.2.0'
 
-gem 'activerecord-jdbcmysql-adapter'
+gem 'mysql2', '>= 0.4.4', '< 0.6.0'
+
+# gem 'activerecord-jdbcmysql-adapter'
 
 
 # Use jdbcmysql as the database for Active Record
@@ -29,6 +31,10 @@ gem 'jbuilder', '~> 2.5'
 # gem 'redis', '~> 4.0'
 # Use ActiveModel has_secure_password
 gem 'bcrypt', '~> 3.1.7'
+
+gem 'rack-cors', require: 'rack/cors'
+
+gem 'ciri', github: 'ciri-ethereum/ciri'
 
 # Use ActiveStorage variant
 # gem 'mini_magick', '~> 4.8'
