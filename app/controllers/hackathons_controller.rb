@@ -1,11 +1,38 @@
 class HackathonsController < ApplicationController
-  before_action :set_hackathon, only: [:show, :update, :destroy]
+  before_action :set_hackathon, only: [:show, :update, :destroy, :apply_cli, :funding_cli]
   before_action :check_update_permission, only: [:update]
 
   # GET /hackathons
   # GET /hackathons.json
   def index
     @hackathons = Hackathon.all
+  end
+
+  def create_cli
+    args = params[:args]
+    command = HacksContract::HackathonFactory.new.create_hackathon(*args, invoke: false)
+    render json: {command: command}
+  end
+
+  def encode
+    contract = params[:contract]
+    abi = if contract == 'hackathon'
+            HacksContract::Hackathon::ABI_CONTENT
+          else
+            HacksContract::HackathonFactory::ABI_CONTENT
+          end
+    function = params[:function]
+    args = params[:args]
+    data = HacksContract.encode_function(abi, function, *args)
+    render json: {data: data}
+  end
+
+  def cli
+    function = params[:function]
+    args = params[:args]
+    h = HacksContract::Hackathon.new(@hackathon.address)
+    command = h.rpc(function, args, invoke: false, transaction: true)
+    render json: {command: command}
   end
 
   # GET /hackathons/1
@@ -16,7 +43,7 @@ class HackathonsController < ApplicationController
   # POST /hackathons
   # POST /hackathons.json
   def create
-    @hackathon = Hackathon.new(hackathon_params)
+    @hackathon = Hackathon.new(hackathon_params[:hackathon])
 
     if @hackathon.save
       render :show, status: :created, location: @hackathon

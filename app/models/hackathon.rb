@@ -14,21 +14,41 @@ class Hackathon < ApplicationRecord
   # detection realtime status and update status
   def current_status
     return status if [:finished, :failed].include? status
-    current = Time.now
+    if address&.start_with?("0x")
+      state = HacksContract::Hackathon.new(address).state
+      s = case state
+          when 0
+            :preparation
+          when 1
+            :crow_funding
+          when 2
+            :apply_participation
+          when 3
+            :gaming
+          when 4
+            :voting
+          when 5
+            :finished
+          else
+            :failed
+          end
+    else
+      current = Time.now
+      s = if current < crow_funding_start_at
+            :preparation
+          elsif current < apply_start_at
+            :crow_funding
+          elsif current < game_start_at
+            :apply_participation
+          elsif current < vote_start_at
+            :gaming
+          elsif current < finished_at
+            :voting
+          else
+            :finished
+          end
+    end
 
-    s = if current < crow_funding_start_at
-          :preparation
-        elsif current < apply_start_at
-          :crow_funding
-        elsif current < game_start_at
-          :apply_participation
-        elsif current < vote_start_at
-          :gaming
-        elsif current < finished_at
-          :voting
-        else
-          :finished
-        end
     if s != status
       update_column(:status, s)
     end

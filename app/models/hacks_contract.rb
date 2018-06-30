@@ -61,9 +61,14 @@ module HacksContract
 
     BINARY = "0x#{open("#{Rails.root}/contract/abi/Hackathon.bin").read}"
     ABI = "#{Rails.root}/contract/abi/Hackathon.abi"
+    ABI_CONTENT = JSON.load open(ABI).read
 
     def initialize(address)
       @address = address
+    end
+
+    def votes(address)
+      rpc('votes', [address[2..-1]])
     end
 
     def total_fund
@@ -131,7 +136,7 @@ module HacksContract
     end
 
     def third_bonus
-      rpc("thrid_bonus", [])
+      rpc("thirdBonus", [])
     end
 
     def register_lower_limit
@@ -166,35 +171,35 @@ module HacksContract
       rpc('isFailed', [])
     end
 
-    def rpc(function_name, args)
+    def rpc(function_name, args, invoke: true, transaction: false)
       # params = args.empty? ? "--param 1" : args.map {|arg| "--param #{arg}"}.join(" ")
       # command = [HacksContract::BIN, "ethabi", "encode", "function", params, ABI, function_name].join(" ")
       # p command
       # input = `#{command}`.strip[1..-2]
       input = encode_function(function_name, *args)
-      command = [
-        HacksContract::BIN, "rpc", "call",
-        "--data", "0x#{input}",
-        "--to", @address,
-      ].join(" ")
+      if transaction
+        command = [HacksContract::BIN, "rpc", "sendRawTransaction",
+                   "--code", "0x#{input}",
+                   "--address", @address,
+                   "--quota", "100000000"].join(" ")
+      else
+        command = [
+          HacksContract::BIN, "rpc", "call",
+          "--data", "0x#{input}",
+          "--to", @address,
+        ].join(" ")
+      end
       p command
+      return command unless invoke
       transaction_res = `#{command}`
       transaction = JSON.load(transaction_res)
+      return nil unless transaction
       Utils.big_endian_decode(Utils.hex_to_data(transaction["result"]))
       # get_receipt(transaction["result"]["hash"])
     end
 
     def encode_function(function_name, *args)
-      abi2 = abi.find {|a| a['name'] == function_name}
-      types = abi2['inputs'].map {|i| i['type']}
-      signature = "#{function_name}(#{types.join ','})"
-      first_byte = Utils.sha3(signature)[0..3]
-      encoded = first_byte + args.map {|i| Utils.big_endian_encode_to_size(i, size: 32)}.join
-      Utils.data_to_hex(encoded)[2..-1]
-    end
-
-    def abi
-      @abi ||= JSON.load open(ABI).read
+      HacksContract.encode_function(ABI_CONTENT, function_name, *args)
     end
 
     def get_receipt(h)
@@ -208,15 +213,17 @@ module HacksContract
 
     BINARY = "0x#{open("#{Rails.root}/contract/abi/HackathonFactory.bin").read}"
     ABI = "#{Rails.root}/contract/abi/HackathonFactory.abi"
-    ADDRESS = "0xb926e4a33bdc91a0ad62d1d619b3c82686fd4f30"
+    ADDRESS = "0x430ae2d2860a2aadd7acdb4fb3c1e7574964217c"
+    ABI_CONTENT = JSON.load open(ABI).read
 
     # 10.to_wei,
-    def create_hackathon(fund_target, fund_period, sign_up_period, match_period, vote_period, deposit, sign_up_fee, champ_bonus, second_bonus, thrid_bonus, vote_bonus, max_teams, min_teams)
-      result = rpc('CreateHackathon', [fund_target, fund_period, sign_up_period, match_period, vote_period, deposit, sign_up_fee, champ_bonus, second_bonus, thrid_bonus, vote_bonus, max_teams, min_teams])
+    def create_hackathon(fund_target, fund_period, sign_up_period, match_period, vote_period, deposit, sign_up_fee, champ_bonus, second_bonus, thrid_bonus, vote_bonus, max_teams, min_teams, invoke: true)
+      result = rpc('CreateHackathon', [fund_target, fund_period, sign_up_period, match_period, vote_period, deposit, sign_up_fee, champ_bonus, second_bonus, thrid_bonus, vote_bonus, max_teams, min_teams], invoke: invoke)
+      return result unless invoke
       result["result"]["logs"][-1]["topics"][2][-20..-1]
     end
 
-    def rpc(function_name, args)
+    def rpc(function_name, args, invoke: true)
       # command = [HacksContract::BIN, "ethabi", "encode", "function", args.map {|arg| "--param #{arg}"}.join(" "), ABI, function_name].join(" ")
       # p command
       # input = `#{command}`.strip[1..-2]
@@ -224,30 +231,39 @@ module HacksContract
       command = [HacksContract::BIN, "rpc", "sendRawTransaction",
                  "--code", "0x#{input}",
                  "--address", ADDRESS,
-                 "--private-key", "0x90522bd811a6794e07971de03e32e62c7a35fd677e6737a6146b18a8bcffc4df",
-                 "--quota", "100000000"].join(" ")
+                 "--quota", "100000000"]
+      command += ["--private-key", "0x90522bd811a6794e07971de03e32e62c7a35fd677e6737a6146b18a8bcffc4df"] unless invoke
+      command.join(" ")
       p command
+      return command unless invoke
       transaction_res = `#{command}`
       transaction = JSON.load(transaction_res)
       get_receipt(transaction["result"]["hash"])
     end
 
     def encode_function(function_name, *args)
-      abi2 = abi.find {|a| a['name'] == function_name}
-      types = abi2['inputs'].map {|i| i['type']}
-      signature = "#{function_name}(#{types.join ','})"
-      first_byte = Utils.sha3(signature)[0..3]
-      encoded = first_byte + args.map {|i| Utils.big_endian_encode_to_size(i, size: 32)}.join
-      Utils.data_to_hex(encoded)[2..-1]
-    end
-
-    def abi
-      @abi ||= JSON.load open(ABI).read
+      HacksContract.encode_function(ABI_CONTENT, function_name, *args)
     end
 
     def get_receipt(h)
       `cita-cli rpc getTransactionReceipt --hash #{h}`
     end
+  end
+
+  def self.encode_function(abi, function_name, *args)
+    abi2 = abi.find {|a| a['name'] == function_name}
+    types = abi2['inputs'].map {|i| i['type']}
+    signature = "#{function_name}(#{types.join ','})"
+    first_byte = Ciri::Utils.sha3(signature)[0..3]
+    encoded = first_byte + args.map {|i|
+      if i.is_a?(Integer)
+        Ciri::Utils.big_endian_encode_to_size(i, size: 32)
+      else
+        # asume is a address
+        "0x" + i.rjust(64, "0")
+      end
+    }.join
+    Ciri::Utils.data_to_hex(encoded)[2..-1]
   end
 
 end

@@ -1,5 +1,5 @@
 class TeamsController < ApplicationController
-  before_action :set_team, only: [:show, :update, :destroy]
+  before_action :set_team, only: [:show, :update, :destroy, :vote_cli]
   before_action :authenticate_user, only: [:create]
   before_action :check_create_permission, only: [:create]
   before_action :check_update_permission, only: [:update]
@@ -8,6 +8,20 @@ class TeamsController < ApplicationController
   # GET /teams.json
   def index
     @teams = Team.all
+  end
+
+  def vote_cli
+    function = "vote"
+    args = [@team.user.address]
+    h = HacksContract::Hackathon.new(@team.hackathon.address)
+    command = h.rpc(function, args, invoke: false, transaction: true)
+    render json: {command: command}
+  end
+
+  def votes
+    h = HacksContract::Hackathon.new(@team.hackathon.address)
+    votes = h.votes(@team.user.address)
+    render json: {votes: votes}
   end
 
   # GET /teams/1
