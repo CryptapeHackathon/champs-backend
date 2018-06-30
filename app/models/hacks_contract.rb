@@ -103,6 +103,10 @@ module HacksContract
       rpc('champBonus', [])
     end
 
+    def deposit
+      rpc('deposit', [])
+    end
+
     def closing_sign_up
       rpc('closingSignUp', [])
     end

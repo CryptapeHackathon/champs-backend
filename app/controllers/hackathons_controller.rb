@@ -43,7 +43,24 @@ class HackathonsController < ApplicationController
   # POST /hackathons
   # POST /hackathons.json
   def create
-    @hackathon = Hackathon.new(hackathon_params[:hackathon])
+    #{"function"=>"CreateHackathon", "args"=>[20, 172800000, 172800000, 172800000, 172800000, 200, 200, 20, 20, 20, 40, 23, 23], "contract"=>"hackathonFactory", "hackathon"=>{}}
+    # :topic, :host_fund_eth, :target_fund_eth, :teams_count, :participation_fee_eth, :award_eth_list, :vote_reward_percent, :crow_funding_start_at, :apply_start_at, :game_start_at, :vote_start_at, :finished_at, :status
+    # (fund_target, fund_period, sign_up_period, match_period, vote_period, deposit, sign_up_fee, champ_bonus, second_bonus, thrid_bonus, vote_bonus, max_teams, min_teams, invoke: true)
+    params.permit!
+    hackathon_params = params.slice(:name, :host_introduction, :address)
+    args = params[:contract]
+    now = Time.now
+    hackathon_params[:crow_funding_start_at] = now
+    hackathon_params[:target_fund_eth] = args[0]
+    hackathon_params[:apply_start_at] = Time.at(now.to_i + (args[1] / 1000))
+    hackathon_params[:game_start_at] = Time.at(now.to_i + (args[2] / 1000))
+    hackathon_params[:vote_start_at] = Time.at(now.to_i + (args[3] / 1000))
+    hackathon_params[:finished_at] = Time.at(now.to_i + (args[4] / 1000))
+    hackathon_params[:participation_fee_eth] = args[6].to_eth
+    hackathon_params[:award_eth_list] = args[7..9].map(&:to_eth)
+    hackathon_params[:vote_reward_percent] = args[10]
+    hackathon_params[:teams_count] = args[11]
+    @hackathon = Hackathon.new(hackathon_params)
 
     if @hackathon.save
       render :show, status: :created, location: @hackathon

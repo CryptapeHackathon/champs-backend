@@ -3,7 +3,7 @@ class Hackathon < ApplicationRecord
   enum status: [:preparation, :crow_funding, :apply_participation, :gaming, :voting, :finished, :failed]
 
   has_many :teams
-  belongs_to :user
+  # belongs_to :user
 
   def refresh_real_status
     current_status
