@@ -256,7 +256,9 @@ module HacksContract
 
   def self.encode_function(abi, function_name, *args)
     abi2 = abi.find {|a| a['name'] == function_name}
-    types = abi2['inputs'].map {|i| i['type']}
+    types = abi2['inputs'].map {|i|
+      i['type']
+    }
     signature = "#{function_name}(#{types.join ','})"
     first_byte = Ciri::Utils.sha3(signature)[0..3]
     encoded = first_byte + args.map {|i|
@@ -264,9 +266,15 @@ module HacksContract
         Ciri::Utils.big_endian_encode_to_size(i, size: 32)
       else
         # asume is a address
-        "0x" + i.rjust(64, "0")
+        p Ciri::Utils.data_to_hex(Ciri::Utils.hex_to_data(i).rjust(32, "\x00".b))
+        if i.size > 20
+          Ciri::Utils.hex_to_data(i).rjust(32, "\x00".b)
+        else
+          i.rjust(32, "\x00".b)
+        end
       end
     }.join
+    p Ciri::Utils.data_to_hex(encoded)[2..-1]
     Ciri::Utils.data_to_hex(encoded)[2..-1]
   end
 
